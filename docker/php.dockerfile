@@ -15,7 +15,7 @@ COPY . .
 
 # Instalar dependencias de producción y optimizar
 #RUN composer install --no-dev --optimize-autoloader
-RUN composer install --no-dev --no-scripts --no-autoloader
+RUN composer install --no-dev --no-scripts --no-autoloader --ignore-platform-reqs
 
 RUN composer dump-autoload --optimize
 
