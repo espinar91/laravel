@@ -1,0 +1,187 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:877092167058:task-definition/fow-qa:4",
+    "containerDefinitions": [
+        {
+            "name": "fow-qa",
+            "image": "public.ecr.aws/nginx/nginx:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "REDIS_HOST",
+                    "value": "redis_endpoint"
+                },
+                {
+                    "name": "AWS_BUCKET",
+                    "value": "s3_bucket"
+                },
+                {
+                    "name": "FILESYSTEM_DISK",
+                    "value": "s3"
+                },
+                {
+                    "name": "APP_ENV",
+                    "value": "qa"
+                },
+                {
+                    "name": "DB_HOST",
+                    "value": "db_endpoint"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [
+                {
+                    "name": "DB_PASSWORD",
+                    "valueFrom": "arn:aws:ssm:us-east-1:877092167058:parameter/rds_password"
+                }
+            ],
+            "dependsOn": [
+                {
+                    "containerName": "php",
+                    "condition": "HEALTHY"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/fow-qa-ecs-cluster/fow-qa",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "fow-qa-app-"
+                }
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "bash -c 'exec 3<>/dev/tcp/localhost/80' || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 5,
+                "startPeriod": 60
+            },
+            "systemControls": []
+        },
+        {
+            "name": "php",
+            "image": "public.ecr.aws/bitcompat/php-fpm:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 9000,
+                    "hostPort": 9000,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "startTimeout": 120,
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/fow-qa-ecs-cluster/fow-qa",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "fow-qa-php-"
+                }
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "bash -c 'exec 3<>/dev/tcp/localhost/9000' || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 5,
+                "startPeriod": 60
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "fow-qa",
+    "taskRoleArn": "arn:aws:iam::877092167058:role/ecs-task-fow-qa",
+    "executionRoleArn": "arn:aws:iam::877092167058:role/ecs-task-fow-qa",
+    "networkMode": "awsvpc",
+    "revision": 4,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.container-health-check"
+        },
+        {
+            "name": "ecs.capability.container-ordering"
+        },
+        {
+            "name": "ecs.capability.secrets.ssm.environment-variables"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE",
+        "MANAGED_INSTANCES"
+    ],
+    "runtimePlatform": {
+        "cpuArchitecture": "ARM64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "512",
+    "memory": "1024",
+    "registeredAt": "2026-05-13T10:08:24.693Z",
+    "registeredBy": "arn:aws:sts::877092167058:assumed-role/terraform-cloud/aws-go-sdk-1778666903392717808",
+    "tags": [
+        {
+            "key": "Project",
+            "value": "PROJ-2655"
+        },
+        {
+            "key": "Environment",
+            "value": "qa"
+        },
+        {
+            "key": "ausum-jira",
+            "value": "PROJ-2655"
+        },
+        {
+            "key": "ManagedBy",
+            "value": "Terraform"
+        },
+        {
+            "key": "Name",
+            "value": "fow-qa"
+        }
+    ]
+}
