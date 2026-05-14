@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/php:8.4444-fpm-alpine
+FROM public.ecr.aws/docker/library/php:8.4-fpm-alpine
 
 # Instalar dependencias del sistema y extensiones de PHP requeridas por Laravel
 RUN apk add --no-cache libpng-dev libjpeg-turbo-dev freetype-dev zip unzip git bash \
