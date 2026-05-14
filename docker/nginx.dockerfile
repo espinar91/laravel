@@ -5,6 +5,6 @@ COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Nginx necesita tener acceso a los archivos estáticos de la carpeta public de Laravel
 WORKDIR /var/www
-COPY src/public ./public
+COPY public ./public
 
 EXPOSE 80
