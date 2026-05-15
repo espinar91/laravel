@@ -7,19 +7,20 @@ phases:
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
       - REPO_NGINX=fow-nginx
       - REPO_PHP=fow-php
+      - AWS_ECR=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-7)
   build:
     commands:
       - echo Construyendo imágenes Docker...
-      - docker build -t $REPO_NGINX:latest -t $REPO_NGINX:$IMAGE_TAG -f docker/nginx.dockerfile .
-      - docker build -t $REPO_PHP:latest -t $REPO_PHP:$IMAGE_TAG -f docker/php.dockerfile .
+      - docker build -t $AWS_ECR/$REPO_NGINX:latest -t $AWS_ECR/$REPO_NGINX:$IMAGE_TAG -f docker/nginx.dockerfile .
+      - docker build -t $AWS_ECR/$REPO_PHP:latest -t $AWS_ECR/$REPO_PHP:$IMAGE_TAG -f docker/php.dockerfile .
   post_build:
     commands:
       - echo Subiendo imágenes a Amazon ECR...
-      - docker push $REPO_NGINX:latest
-      - docker push $REPO_NGINX:$IMAGE_TAG
-      - docker push $REPO_PHP:latest
-      - docker push $REPO_PHP:$IMAGE_TAG
+      - docker push $AWS_ECR/$REPO_NGINX:latest
+      - docker push $AWS_ECR/$REPO_NGINX:$IMAGE_TAG
+      - docker push $AWS_ECR/$REPO_PHP:latest
+      - docker push $AWS_ECR/$REPO_PHP:$IMAGE_TAG
       - echo Generando archivo de artefactos para el despliegue...
       - printf '[{"name":"%s","imageUri":"%s"},{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME_NGINX" "$REPO_NGINX:$IMAGE_TAG" "$CONTAINER_NAME_PHP" "$REPO_PHP:$IMAGE_TAG" > imagedefinitions.json
 
