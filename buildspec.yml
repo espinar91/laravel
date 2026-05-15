@@ -5,8 +5,8 @@ phases:
     commands:
       - echo Iniciando sesión en Amazon ECR...
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - REPO_NGINX=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - REPO_PHP=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - REPO_NGINX=fow-nginx
+      - REPO_PHP=fow-php
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-7)
   build:
     commands:
