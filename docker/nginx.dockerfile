@@ -7,6 +7,6 @@ COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 WORKDIR /var/www
 COPY public ./public
 
-COPY docker/nginx.conf /etc/nginx/conf.d/nginx.conf
+RUN chown -R www-data:www-data /var/www/public
 
 EXPOSE 80

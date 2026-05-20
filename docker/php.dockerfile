@@ -14,11 +14,11 @@ WORKDIR /var/www
 COPY . .
 
 # Instalar dependencias de producción y optimizar
-RUN composer install --no-dev --optimize-autoloader
+#RUN composer install --no-dev --optimize-autoloader
 
-RUN php artisan config:cache || true
-RUN php artisan route:cache  || true
-RUN php artisan view:cach || true
+#RUN php artisan config:cache || true
+#RUN php artisan route:cache  || true
+#RUN php artisan view:cach || true
 
 # Configurar permisos para almacenamiento y caché
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
