@@ -6,7 +6,7 @@ RUN apk add --no-cache libpng-dev libjpeg-turbo-dev freetype-dev zip unzip git b
     && docker-php-ext-install pdo_mysql gd bcmath opcache
 
 # Copiar Composer desde ECR Public
-#COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
@@ -14,10 +14,11 @@ WORKDIR /var/www
 COPY . .
 
 # Instalar dependencias de producción y optimizar
-#RUN composer install --no-dev --optimize-autoloader
-#RUN composer install --no-dev --no-scripts --no-autoloader --ignore-platform-reqs
+RUN composer install --no-dev --optimize-autoloader
 
-#RUN composer dump-autoload --optimize
+RUN php artisan config:cache || true
+RUN php artisan route:cache  || true
+RUN php artisan view:cach || true
 
 # Configurar permisos para almacenamiento y caché
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
